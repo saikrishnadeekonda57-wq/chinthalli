@@ -476,6 +476,27 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
+        // Direct guarantee for creator & origin questions
+        const lastQuery = (trimmed[trimmed.length - 1]?.content || "").trim();
+        const lowerQuery = lastQuery.toLowerCase();
+        const isCreatorQuery = /who\s+(is\s+your\s+(creator|developer)|(created|developed|made|prepared|built)\s+you)|ninnu\s+(evaru|tayaru|develop)|nuvvu\s+evaru|who\s+are\s+you|nin\s+evaru|who\s+made\s+chinthalli/i.test(lowerQuery);
+
+        if (isCreatorQuery) {
+          let lang = "en-IN";
+          if (/[\u0C00-\u0C7F]/.test(lastQuery) || /(evaru|chesaru|cheppu|telusa|ninnu)/i.test(lowerQuery)) lang = "te-IN";
+          else if (/[\u0900-\u097F]/.test(lastQuery) || /(kisne|banaya|kaun)/i.test(lowerQuery)) lang = "hi-IN";
+
+          let reply = "My developer is Krishna and He named me Chinthalli which is also his wife's name! ✨";
+          if (lang === "te-IN") {
+            reply = "నన్ను డెవలప్ చేసింది కృష్ణ! ఆయన ప్రేమతో తన భార్య చింతల్లి పేరునే నాకు పెట్టారు! ✨";
+          } else if (lang === "hi-IN") {
+            reply = "मुझे मेरे डेवलपर कृष्णा ने बनाया है, और उन्होंने प्यार से अपनी पत्नी चिंथल्ली के नाम पर मेरा नाम रखा है! ✨";
+          }
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ reply, lang, actions: [] }));
+          return;
+        }
+
         let botResponse = null;
 
         if (GEMINI_API_KEY) {
