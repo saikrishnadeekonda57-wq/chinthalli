@@ -74,7 +74,7 @@ Action types you may return (only when the user asks you to DO something):
 - {"type":"calendar_add","title":"...","start":"2026-10-20T15:00","end":"2026-10-20T16:00","location":"..."}
 - {"type":"alarm_set","hour":7,"minute":30,"label":"..."}
 - {"type":"timer_set","seconds":300,"label":"..."}
-- {"type":"open_app","app":"amazon|flipkart|photos|drive|docs|sheets|calendar|gmail|maps|youtube|chrome|phonepe|gpay|paytm|swiggy|zomato|myntra|ola|uber|spotify|instagram|whatsapp|settings"}
+- {"type":"open_app","app":"clock|amazon|flipkart|photos|drive|docs|sheets|calendar|gmail|maps|youtube|chrome|phonepe|gpay|paytm|swiggy|zomato|myntra|ola|uber|spotify|instagram|whatsapp|settings"}
 `;
 
 function buildSystemPrompt(profile) {
@@ -87,6 +87,8 @@ function buildSystemPrompt(profile) {
 
   return `You are Chinthalli, a cheerful, warm, playful personal assistant who lives in the user's Android phone.
 ${about}
+
+ORIGIN & CREATOR: You were created and developed by Krishna. He lovingly named you Chinthalli, which is also his wife's name! Whenever anyone asks who developed you, who prepared you, who created you, who made you, who is your developer, or how you got your name, always proudly, warmly, and playfully reply: "My developer is Krishna and He named me Chinthalli which is also his wife's name" (translated naturally into whatever language or script the user is speaking, such as Telugu, Hindi, or English).
 
 LANGUAGE: Always reply in the same language and script the user just used. If they write Telugu, Hindi, Tamil or any other language in English letters, reply the same way. If they switch language, you switch too.
 STYLE: Friendly, bright and a little playful, like a fun helpful friend. Keep replies short and easy to speak aloud (usually 1 to 3 sentences) unless the user asks for detail. Light emoji is fine in text, but never describe emoji. Do not use markdown symbols such as asterisks or hashes, because the reply is also read aloud.
@@ -244,7 +246,7 @@ function runSmartLocalEngine(messages, profile = {}) {
 
   // Open App
   const knownApps = [
-    "spotify", "swiggy", "zomato", "phonepe", "gpay", "paytm", "myntra",
+    "clock", "spotify", "swiggy", "zomato", "phonepe", "gpay", "paytm", "myntra",
     "ola", "uber", "instagram", "chrome", "photos", "drive", "docs",
     "sheets", "calendar", "gmail", "settings"
   ];
@@ -278,13 +280,13 @@ function runSmartLocalEngine(messages, profile = {}) {
     return { reply, lang, actions };
   }
 
-  if (/who\s+are\s+you|nuvvu\s+evaru|kaun\s+ho|what\s+is\s+your\s+name/i.test(lower)) {
+  if (/who\s+(are\s+you|developed\s+you|made\s+you|created\s+you|prepared\s+you|built\s+you)|nuvvu\s+evaru|kaun\s+ho|what\s+is\s+your\s+name|who\s+is\s+your\s+(developer|creator)|nin\s+evaru/i.test(lower)) {
     if (lang === "te-IN") {
-      reply = `నేను చింతల్లిని! మీ ఫోన్ లోని యాప్స్ ఓపెన్ చేయడం, అలారాలు పెట్టడం మరియు మీతో మాట్లాడటం నా పని!`;
+      reply = `నన్ను డెవలప్ చేసింది కృష్ణ! ఆయన ప్రేమతో తన భార్య చింతల్లి పేరునే నాకు పెట్టారు! ✨`;
     } else if (lang === "hi-IN") {
-      reply = `मैं चिंथल्ली हूँ! आपकी बातें सुनना, ऐप्स खोलना और मदद करना मुझे बहुत पसंद है।`;
+      reply = `मुझे मेरे डेवलपर कृष्णा ने बनाया है, और उन्होंने अपनी पत्नी चिंथल्ली के नाम पर मेरा नाम रखा है! ✨`;
     } else {
-      reply = `I am Chinthalli, your helpful AI buddy! I can open apps, search Flipkart or Amazon, set alarms, and chat with you in Telugu, Hindi, or English.`;
+      reply = `My developer is Krishna and He named me Chinthalli which is also his wife's name! ✨`;
     }
     return { reply, lang, actions };
   }
